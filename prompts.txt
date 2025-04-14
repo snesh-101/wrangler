@@ -1,0 +1,129 @@
+
+# Prompts and Errors Faced During CDAP Wrangler Enhancement Assignment
+
+
+---
+
+##  Initial Understanding
+
+
+- "Hey, I've got this assignment to enhance the CDAP Wrangler library. I need to add support for parsing byte sizes (like KB, MB) and time durations (like ms, s). Honestly, I'm not sure where to start. Can you help me figure out the first steps?"
+
+- "The assignment says I need to modify the ANTLR grammar file (`Directives.g4`) and update some Java code. I've never worked with ANTLR before. Can you explain how it works and how I can add new tokens for `BYTE_SIZE` and `TIME_DURATION`?"
+
+---
+
+##  Grammar Implementation
+
+> _Working with ANTLR Grammar._
+
+- "I'm trying to add rules for `BYTE_SIZE` and `TIME_DURATION` in the `Directives.g4` file. How do I write grammar rules to recognize values like `10KB` or `500ms`?"
+
+- "I'm getting an error when compiling the grammar: `reference to undefined rule`. How do I fix this? I think it has something to do with the `NUMBER` token."
+
+- "I fixed the grammar rules, but I’m unsure if my lexer rules are clean. How do I write reusable and non-conflicting lexer rules for units?"
+
+- "Can you help me implement the Java classes `ByteSize.java` and `TimeDuration.java` to handle these new token types properly?"
+
+---
+
+## 🧱 Token Implementation
+
+> _Adding `ByteSize` and `TimeDuration` as valid token types._
+
+- "I need to create a `ByteSize` class in the `wrangler-api` module. It should extend `Token` and parse values like `10KB`. Can you help me get started?"
+
+- "How do I handle unit conversion in the `ByteSize` class? I want to store everything in bytes internally but allow output in different units."
+
+- "For the `TimeDuration` class, should I use milliseconds or nanoseconds as the base unit? Which one makes more sense and why?"
+
+- "How do I update the `TokenType` enum to include `BYTE_SIZE` and `TIME_DURATION`? Is there anything else I need to change to make these tokens usable?"
+
+- "Where exactly does token parsing happen in Wrangler? I need to understand how `Token` types flow through the parsing and directive pipeline."
+
+---
+
+## 🧭 Parser Visitor Implementation
+
+> _Plugging token parsing into Wrangler._
+
+- "In the `wrangler-core` module, I need to update the visitor methods to handle the new token types. How do I modify the `visitValue` method to include `BYTE_SIZE` and `TIME_DURATION`?"
+
+- "I'm getting a `NullPointerException` when trying to create a new `ByteSize` token in the parser. What could be causing this?"
+
+- "Do I need to create new visit methods like `visitByteSizeArg()` or should I overload `visitValue()` for different token types?"
+
+---
+
+## 🧩 Directive Implementation
+
+> _Creating a new directive using the new token types._
+
+- "I need to implement a new directive called `aggregate-stats` that uses the new token types. How do I create a directive in Wrangler?"
+
+- "The directive should accept column names for bytes and time, and then output their totals. How do I access the aggregation store or output results from a directive?"
+
+- "I'm getting a `ClassCastException` when processing columns in the `aggregate-stats` directive. How do I fix this?"
+
+### Error Faced:
+
+```
+java.lang.ClassCastException: class java.lang.String cannot be cast to class io.cdap.wrangler.api.parser.ByteSize
+```
+
+### Prompt to Fix:
+
+- "I'm getting a `ClassCastException` when trying to process columns in the `aggregate-stats` directive. How do I ensure the column data is correctly parsed as `ByteSize` or `TimeDuration`?"
+
+---
+
+## 🧪 Testing
+
+> _Writing and debugging tests._
+
+- "Can you show me how to write unit tests for `ByteSize` and `TimeDuration` classes? I need to test parsing, unit conversion, and edge cases."
+
+- "How do I test the grammar rules using the parser test framework? Do I need to test full directives or just the tokens?"
+
+- "How do I use `TestingRig` to create test data with `ByteSize` and `TimeDuration` values in columns?"
+
+- "My test for the `aggregate-stats` directive is failing. The `TestingRig` output is empty. How do I debug this?"
+
+### Error Faced:
+
+```
+java.lang.AssertionError: Expected 1 row but got 0 rows in TestingRig output
+```
+
+### Prompt to Fix:
+
+- "My test for the `aggregate-stats` directive is failing. The `TestingRig` output is empty. How do I fix this and make sure my test is configured correctly?"
+
+---
+### Error Faced:
+
+```
+[ERROR] src/main/java/io/cdap/wrangler/core/aggregate/AggregateStats.java:[45,5] Line is longer than 100 characters
+```
+
+### Prompt to Fix:
+
+- "I'm getting checkstyle errors about line length in `AggregateStats.java`. What's the best way to fix this without breaking the logic?"
+
+---
+
+## 📝 Documentation and Final Review (April 13, 2025)
+
+> _Wrapping up the implementation._
+
+- "How should I document the new `ByteSize` and `TimeDuration` parsers in the `README.md`? Should I include directive usage examples?"
+
+- "Can you review my implementation? Are there any edge cases I missed or things I could improve?"
+
+- "How do I make sure the changes I made don't break existing directives or tokens?"
+
+- "Thanks for all the help. Just submitted the final code! I was using GitHub Copilot for a bit, and it refreshed my session—so I’m noting down all my prompts here to preserve them. 🙏"
+
+---
+
+
